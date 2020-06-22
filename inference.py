@@ -45,7 +45,7 @@ class Inference:
         :return: Predicted heatmap.
         """
         try:
-            prediction = tfs_client.predict_new(image, config.MODEL_NAME)
+            prediction = tfs_client.predict(image, config.MODEL_NAME)
         except Exception as e:
             print('TF_SERVING_HOST: {}'.format(config.TF_SERVING_HOST))
             print(e)
@@ -84,16 +84,17 @@ class Inference:
                     level=self.use_level, size=(self.config.PATCH_SIZE, self.config.PATCH_SIZE)))[:, :, 0: 3]
                 prediction_result = self._infer(tfs_client, input_image)
                 prediction_result = prediction_result[clip_region[0]: (self.config.CENTER_SIZE + clip_region[0]),
-                                        clip_region[1]: (self.config.CENTER_SIZE + clip_region[1])]
+                                    clip_region[1]: (self.config.CENTER_SIZE + clip_region[1])]
                 prediction_result = prediction_result[region[2]:(region[4] + 1), region[3]:(region[5] + 1)]
                 if self.config.DO_POST_PROCESSING:
                     prediction_result = post_processing(prediction_result)
                 write(temp_dir + image_name + '_' + str(region[0]) + '_' + str(region[1])
-                        + '_prediction.png', prediction_result, self.class_num)
+                      + '_prediction.png', prediction_result, self.class_num)
             print('[INFO] Postprocessing...')
             full_prediction = concat_patches(temp_dir, image_name)
             write(self.result_dir +
-                    '_'.join([image_name, 'prediction_thumbnail']) + '.png', full_prediction)
+                  '_'.join([image_name, 'prediction_thumbnail']) + '.png', full_prediction)
             if not self.config.KEEP_TEMP:
                 shutil.rmtree(temp_dir)
-            print('[INFO] Prediction saved to ' + self.result_dir + '_'.join([image_name, 'prediction_thumbnail']) + '.png')
+            print('[INFO] Prediction saved to ' + self.result_dir + '_'.join(
+                [image_name, 'prediction_thumbnail']) + '.png')

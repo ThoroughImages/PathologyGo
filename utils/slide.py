@@ -9,9 +9,6 @@ import config
 
 
 class Slide(object):
-    """
-    Support file format of .tif .svs etc.
-    """
     def __init__(self, image_path):
         super(Slide, self).__init__()
         self.image_path = image_path.strip()

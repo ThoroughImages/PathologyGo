@@ -2,6 +2,7 @@
 Basic components for using TF Serving.
 """
 import os
+
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
 import numpy as np
 import grpc
@@ -10,9 +11,9 @@ from grpc.beta import implementations
 from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2
 from grpc._cython import cygrpc
-import cv2
 from PIL import Image
 import io
+import config
 
 
 def decode_tensor(contents, downsample_factor):
@@ -28,6 +29,7 @@ class TFServing(object):
     """
     Tensorflow Serving client, send prediction request.
     """
+
     def __init__(self, host, port):
         super(TFServing, self).__init__()
 
@@ -44,30 +46,12 @@ class TFServing(object):
     def predict(self, image_input, model_name):
         request = predict_pb2.PredictRequest()
         request.model_spec.name = model_name
-        request.inputs['x'].CopyFrom(tf.contrib.util.make_tensor_proto(
+        request.inputs['input'].CopyFrom(tf.contrib.util.make_tensor_proto(
             image_input.astype(np.uint8, copy=False)))
         try:
             result = self._stub.Predict(request, 1000.0)
-            image_prob = np.array(result.outputs[v.PREDICT_KEY].int_val)
-            num_channels = len(image_prob) / image_input.shape[0] / image_input.shape[1]
-            image_prob = image_prob.reshape((image_input.shape[0], image_input.shape[1], num_channels))
+            image_prob = np.array(result.outputs[config.PREDICT_KEY].int_val)
         except Exception as e:
             raise e
         else:
             return image_prob.astype(np.uint8)
-
-    def predict_new(self, image_input, model_name, downsample_factor=1):
-        image_input = cv2.cvtColor(image_input, code=cv2.COLOR_RGB2BGR)
-        image_str = cv2.imencode('.png', image_input)[1].tostring()
-        request = predict_pb2.PredictRequest()
-        request.model_spec.name = model_name
-        request.inputs['x'].CopyFrom(tf.contrib.util.make_tensor_proto(image_str))
-        request.inputs['downsample_factor'].CopyFrom(tf.contrib.util.make_tensor_proto(downsample_factor))
-        try:
-            result = self._stub.Predict(request, 1000.0)
-            image_prob_str = result.outputs[v.PREDICT_KEY].string_val
-            image_probs = decode_tensor(image_prob_str, downsample_factor)
-        except Exception as e:
-            raise e
-        else:
-            return image_probs
