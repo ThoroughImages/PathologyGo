@@ -46,7 +46,7 @@ class TFServing(object):
     def predict(self, image_input, model_name):
         request = predict_pb2.PredictRequest()
         request.model_spec.name = model_name
-        request.inputs['input'].CopyFrom(tf.contrib.util.make_tensor_proto(
+        request.inputs[config.INPUT_KEY].CopyFrom(tf.contrib.util.make_tensor_proto(
             image_input.astype(np.uint8, copy=False)))
         try:
             result = self._stub.Predict(request, 1000.0)

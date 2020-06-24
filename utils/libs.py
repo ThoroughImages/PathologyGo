@@ -1,12 +1,7 @@
-import os
 import glob
-import math
 import numpy as np
 import cv2
 from PIL import Image
-import tensorflow as tf
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
 import config
 
 

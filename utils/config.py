@@ -14,6 +14,7 @@ format_mapping = {
     'vms': 'OpenSlide',
 }
 MODEL_NAME = 'stomach'
+INPUT_KEY = 'output'
 PREDICT_KEY = 'output'
 TF_SERVING_HOST = os.environ.get('TF_SERVING_HOST', '127.0.0.1')
 TF_SERVING_PORT = int(os.environ.get('TF_SERVING_PORT', 9000))
