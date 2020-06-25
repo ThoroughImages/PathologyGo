@@ -94,7 +94,6 @@ class Inference:
                       + '_prediction.png', prediction_result, self.class_num)
             print('[INFO] Postprocessing...')
             full_prediction = concat_patches(temp_dir, image_name)
-            print(full_prediction)
             write(self.result_dir +
                   '_'.join([image_name, 'prediction_thumbnail']) + '.png', full_prediction, color_map=False)
             if not self.config.KEEP_TEMP:
