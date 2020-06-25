@@ -53,6 +53,6 @@ The predicted heatmaps will be written to `./result`.
 
 <b>DIY Notes</b>
 
-You may use other exported models. Just remember to modify `class_num` and `use_level`.
+You may use other exported models. You can change the model name for TensorFlow Serving in `utils/config.py`. Just remember to modify `class_num` and `use_level`.
 
 Note that the default input / output tensor name should be `input` / `output`.
