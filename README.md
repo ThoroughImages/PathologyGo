@@ -4,7 +4,7 @@ Core components of PathologyGo, the AI assistance system designed for histopatho
 <b>Dependency</b>
 
 * Docker
-* Python 2.7
+* Python 2.7 and 3.x
 * openslide
 * tensorflow_serving
 * grpc

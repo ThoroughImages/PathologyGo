@@ -1,1 +1,0 @@
-from .imagereader import ImageReader

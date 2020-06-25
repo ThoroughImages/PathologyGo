@@ -2,17 +2,16 @@
 Basic components for using TF Serving.
 """
 import os
-
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
+import io
 import numpy as np
+from PIL import Image
 import grpc
 import tensorflow as tf
 from grpc.beta import implementations
 from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2
 from grpc._cython import cygrpc
-from PIL import Image
-import io
 import config
 
 

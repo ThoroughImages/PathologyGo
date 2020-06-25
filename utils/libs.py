@@ -2,20 +2,21 @@ import glob
 import numpy as np
 import cv2
 from PIL import Image
-import config
+from utils import config
 
 
-def write(filename, content, class_num=2):
+def write(filename, content, class_num=2, color_map=True):
     """
     Save image array to a specified path.
     The image will be automatically recolored via the class number.
     :param filename: The specified path.
     :param content: Numpy array containing the image.
     :param class_num: Total class number.
+    :param color_map: Whether change the probability into gray grade.
     """
     if class_num <= 1:
         raise Exception('ERROR: Class number should be >= 2.')
-    color_stage = 255. / (class_num - 1)
+    color_stage = 255. / (class_num - 1) if color_map else 1.0
     new_image = Image.fromarray(np.uint8(content * color_stage))
     new_image.save(filename, "PNG")
 
@@ -27,8 +28,8 @@ def generate_effective_regions(size):
     """
     width = size[0]
     height = size[1]
-    x_step = width / config.CENTER_SIZE
-    y_step = height / config.CENTER_SIZE
+    x_step = int(width / config.CENTER_SIZE)
+    y_step = int(height / config.CENTER_SIZE)
     regions = []
     for x in range(0, x_step):
         for y in range(0, y_step):
@@ -115,7 +116,8 @@ def concat_patches(temp_dir, image_name):
         if original_width < config.THUMBNAIL_RATIO or original_height < config.THUMBNAIL_RATIO:
             continue
         image = image.resize(
-            (original_width / config.THUMBNAIL_RATIO, original_height / config.THUMBNAIL_RATIO), Image.NEAREST)
+            (int(original_width / config.THUMBNAIL_RATIO),
+             int(original_height / config.THUMBNAIL_RATIO)), Image.NEAREST)
         image_patch = image_to_array(image)
         if not pos_x == last_x:
             last_x = pos_x

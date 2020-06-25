@@ -5,8 +5,8 @@ Email: eric.wang@thorough.ai
 """
 import os
 import shutil
-from utils.tf_serving import TFServing
 import numpy as np
+from utils.tf_serving import TFServing
 from utils.slide import Slide
 from utils import config
 from utils.libs import write, generate_effective_regions, generate_overlap_tile, \
@@ -33,6 +33,8 @@ class Inference:
             self.result_dir = result_dir
         else:
             self.result_dir = result_dir + '/'
+        if not os.path.exists(self.result_dir):
+            os.mkdir(self.result_dir)
         self.use_level = use_level
         self.config = config
 
@@ -92,8 +94,9 @@ class Inference:
                       + '_prediction.png', prediction_result, self.class_num)
             print('[INFO] Postprocessing...')
             full_prediction = concat_patches(temp_dir, image_name)
+            print(full_prediction)
             write(self.result_dir +
-                  '_'.join([image_name, 'prediction_thumbnail']) + '.png', full_prediction)
+                  '_'.join([image_name, 'prediction_thumbnail']) + '.png', full_prediction, color_map=False)
             if not self.config.KEEP_TEMP:
                 shutil.rmtree(temp_dir)
             print('[INFO] Prediction saved to ' + self.result_dir + '_'.join(

@@ -5,7 +5,7 @@ Email: liucancheng@thorough.ai
 """
 import os.path
 from openslide import OpenSlide
-import config
+from utils import config
 
 
 class Slide(object):
